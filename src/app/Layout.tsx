@@ -4,15 +4,13 @@ import Navbar from "@/components/Navbar";
 
 interface LayoutProps {
   children: ReactNode;
-  themeMode: "light" | "dark" | "system";
-  setThemeMode: (value: "light" | "dark" | "system") => void;
 }
 
-const Layout = ({ children, themeMode, setThemeMode }: LayoutProps) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.08),_transparent_50%),linear-gradient(180deg,_#020617,_#050b16)] text-slate-100">
       <Navbar themeMode={themeMode} setThemeMode={setThemeMode} />
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pb-12 pt-4 md:px-6">
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pb-12 pt-5 md:px-6">
         {children}
       </main>
       <Footer />

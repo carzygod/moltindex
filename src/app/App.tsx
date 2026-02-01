@@ -26,7 +26,7 @@ const App = () => {
 
   return (
     <AppStateProvider>
-      <Layout themeMode={themeMode} setThemeMode={setThemeMode}>
+      <Layout>
         <AppRoutes />
       </Layout>
     </AppStateProvider>

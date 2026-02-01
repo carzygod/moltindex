@@ -30,7 +30,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex w-full items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 shadow-inner shadow-black/20 sm:max-w-xl">
+    <div className="flex w-full items-center gap-2 rounded-2xl border border-slate-800 bg-[#0d1117]/80 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:max-w-xl">
       <label htmlFor="global-search" className="sr-only">
         Search tools
       </label>

@@ -2,64 +2,58 @@ import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import SearchBar from "./SearchBar";
-import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { label: "Home", to: "/" },
   { label: "Categories", to: "/categories" },
   { label: "Daily News", to: "/news" },
-  { label: "Submit Tool", to: "/submit" },
   { label: "About", to: "/about" },
 ];
 
-interface NavbarProps {
-  themeMode: "light" | "dark" | "system";
-  setThemeMode: (value: "light" | "dark" | "system") => void;
-}
-
-const Navbar = ({ themeMode, setThemeMode }: NavbarProps) => {
+const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-900 bg-slate-950/95 px-4 py-4 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-white/5 bg-[#020617]/95 px-4 py-4 backdrop-blur-lg shadow-[0_10px_30px_rgba(2,6,23,0.6)]">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Link to="/" className="text-xl font-semibold tracking-[0.3em] text-slate-50">
-            MOLTINDEX
-          </Link>
-          <span className="text-xs uppercase tracking-[0.5em] text-slate-500">Toolnav</span>
-        </div>
+        <Link to="/" className="text-lg font-semibold tracking-[0.3em] text-white">
+          <span className="text-primary">MOLT</span>
+          <span className="text-slate-400 ml-1">INDEX</span>
+        </Link>
         <div className="hidden flex-1 items-center justify-center md:flex">
           <SearchBar />
         </div>
         <div className="hidden items-center gap-4 md:flex">
-          <nav className="flex gap-3 text-xs uppercase text-slate-400">
+          <nav className="flex gap-3 text-xs font-semibold tracking-[0.3em] text-slate-400">
             {navLinks.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
-                className={({ isActive }) =>
-                  `transition hover:text-white ${isActive ? "text-white" : ""}`
-                }
+              className={({ isActive }) =>
+                `rounded-full px-3 py-1 transition ${
+                  isActive
+                    ? "bg-white/10 text-slate-100 shadow-[0_0_15px_rgba(88,166,255,0.25)]"
+                    : "hover:bg-white/5 hover:text-white/80"
+                }`
+              }
               >
                 {link.label}
               </NavLink>
             ))}
           </nav>
-          <ThemeToggle mode={themeMode} setMode={setThemeMode} />
           <a
             href="/skill.md"
             target="_blank"
             rel="noreferrer"
-            className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs uppercase tracking-[0.3em]"
+            className="rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:border-white hover:bg-white/20"
           >
-            Skill
+            Agent Skill
           </a>
         </div>
         <button
           type="button"
           aria-label="Toggle menu"
-          className="md:hidden"
+          className="text-white md:hidden"
           onClick={() => setOpen((prev) => !prev)}
         >
           {open ? <X size={20} /> : <Menu size={20} />}
@@ -75,7 +69,7 @@ const Navbar = ({ themeMode, setThemeMode }: NavbarProps) => {
                 to={link.to}
                 className={({ isActive }) =>
                   `rounded-lg px-3 py-2 transition ${
-                    isActive ? "bg-slate-800 text-white" : "hover:bg-slate-900"
+                    isActive ? "bg-white/10 text-white" : "hover:bg-white/5 hover:text-white"
                   }`
                 }
                 onClick={() => setOpen(false)}
@@ -85,14 +79,13 @@ const Navbar = ({ themeMode, setThemeMode }: NavbarProps) => {
             ))}
           </nav>
           <div className="flex items-center justify-between gap-2">
-            <ThemeToggle mode={themeMode} setMode={setThemeMode} />
             <a
               href="/skill.md"
               target="_blank"
               rel="noreferrer"
-              className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs uppercase tracking-[0.3em]"
+              className="rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:border-white hover:bg-white/20"
             >
-              Skill
+              Agent Skill
             </a>
           </div>
         </div>
