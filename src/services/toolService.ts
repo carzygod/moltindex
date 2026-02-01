@@ -23,10 +23,11 @@ export type ToolFilterOptions = {
 export type ToolSortKey = "popularity" | "createdAt" | "rating";
 
 export const filterTools = (
+  tools: Tool[],
   options: ToolFilterOptions = {},
   sortKey: ToolSortKey = "popularity",
 ): Tool[] => {
-  let items = [...toolsData];
+  let items = [...tools];
 
   if (options.categoryId) {
     items = items.filter((tool) => tool.categories.includes(options.categoryId!));
@@ -55,11 +56,12 @@ export const filterTools = (
   return sortToolsBy(items, sortKey);
 };
 
-export const getToolById = (id: string): Tool | undefined => toolsData.find((tool) => tool.id === id);
+export const getToolById = (tools: Tool[], id: string): Tool | undefined =>
+  tools.find((tool) => tool.id === id);
 
-export const getRelatedTools = (tool: Tool, limit = 6): Tool[] => {
+export const getRelatedTools = (tools: Tool[], tool: Tool, limit = 6): Tool[] => {
   const sharedCategory = tool.categories[0];
-  const pipelines = toolsData
+  const pipelines = tools
     .filter((candidate) => candidate.id !== tool.id)
     .sort((a, b) => {
       const score = (tagTool: Tool) =>

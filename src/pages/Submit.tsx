@@ -2,6 +2,9 @@ import { FormEvent, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { getCategories } from "@/services/toolService";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { submitSite, SubmitSitePayload } from "@/services/api";
+import { useSiteData } from "@/app/SiteDataContext";
+import { Pricing } from "@/types/models";
 
 const SubmitPage = () => {
   const categories = useMemo(() => getCategories(), []);
@@ -11,14 +14,17 @@ const SubmitPage = () => {
     category: categories[0]?.id ?? "",
     tags: "",
     description: "",
-    pricing: "free",
+    pricing: "free" as Pricing,
     openSource: false,
     cnAvailable: false,
   });
-  const [pendingSubmissions, setPendingSubmissions] = useLocalStorage("pendingSubmissions", []);
+  const [pendingSubmissions, setPendingSubmissions] = useLocalStorage<
+    { name: string; timestamp: string; status: "synced" | "offline"; message?: string }[]
+  >("pendingSubmissions", []);
   const [status, setStatus] = useState<string>("");
+  const { refresh } = useSiteData();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const { name, url, description } = formState;
     if (!name || !url || !description) {
@@ -37,16 +43,37 @@ const SubmitPage = () => {
       .filter(Boolean)
       .slice(0, 6);
 
-    const payload = { ...formState, tags };
-    setPendingSubmissions((prev) => [...prev, payload]);
-    setStatus("Tool queued for review (demo mode).");
+    const payload: SubmitSitePayload = {
+      name,
+      url,
+      description,
+      tags,
+      categories: [formState.category],
+      pricing: formState.pricing,
+      openSource: formState.openSource,
+      cnAvailable: formState.cnAvailable,
+    };
+    try {
+      await submitSite(payload);
+      setStatus("Tool submitted to Moltindex API. Awaiting review.");
+      setPendingSubmissions((prev) =>
+        [{ name, timestamp: new Date().toISOString(), status: "synced" }, ...prev].slice(0, 5),
+      );
+      void refresh();
+    } catch (error) {
+      const message = (error as Error).message ?? "Network error";
+      setStatus(`Submission saved locally (API unreachable). ${message}`);
+      setPendingSubmissions((prev) =>
+        [{ name, timestamp: new Date().toISOString(), status: "offline", message }, ...prev].slice(0, 5),
+      );
+    }
     setFormState({
       name: "",
       url: "",
       category: categories[0]?.id ?? "",
       tags: "",
       description: "",
-      pricing: "free",
+      pricing: "free" as Pricing,
       openSource: false,
       cnAvailable: false,
     });
@@ -152,10 +179,19 @@ const SubmitPage = () => {
         {status && <p className="text-sm text-slate-300">{status}</p>}
         {pendingSubmissions.length > 0 && (
           <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-400">
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Pending submissions</p>
-            <ul className="mt-2 list-disc space-y-1 pl-5">
-              {pendingSubmissions.map((entry: any, index: number) => (
-                <li key={index}>{entry.name}</li>
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Recent submissions</p>
+            <ul className="mt-2 space-y-1">
+              {pendingSubmissions.map((entry, index) => (
+                <li key={`${entry.name}-${index}`} className="flex items-center justify-between text-sm">
+                  <span>{entry.name}</span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] ${
+                      entry.status === "synced" ? "bg-emerald-500/20 text-emerald-200" : "bg-amber-500/20 text-amber-200"
+                    }`}
+                  >
+                    {entry.status}
+                  </span>
+                </li>
               ))}
             </ul>
           </div>

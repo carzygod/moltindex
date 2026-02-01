@@ -3,6 +3,7 @@ import { AppStateProvider } from "./AppStateContext";
 import { AppRoutes } from "./router";
 import Layout from "./Layout";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { SiteDataProvider } from "./SiteDataContext";
 
 const applyTheme = (mode: string) => {
   const root = document.documentElement;
@@ -15,10 +16,7 @@ const applyTheme = (mode: string) => {
 };
 
 const App = () => {
-  const [themeMode, setThemeMode] = useLocalStorage<"light" | "dark" | "system">(
-    "molt-theme",
-    "system",
-  );
+  const [themeMode] = useLocalStorage<"light" | "dark" | "system">("molt-theme", "system");
 
   useEffect(() => {
     applyTheme(themeMode);
@@ -26,9 +24,11 @@ const App = () => {
 
   return (
     <AppStateProvider>
-      <Layout>
-        <AppRoutes />
-      </Layout>
+      <SiteDataProvider>
+        <Layout>
+          <AppRoutes />
+        </Layout>
+      </SiteDataProvider>
     </AppStateProvider>
   );
 };

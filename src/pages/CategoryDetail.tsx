@@ -3,6 +3,8 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { filterTools, getCategoryById } from "@/services/toolService";
 import ToolCard from "@/components/ToolCard";
+import { ToolCardSkeleton } from "@/components/Skeletons";
+import { useSiteData } from "@/app/SiteDataContext";
 
 const CategoryDetailPage = () => {
   const { categoryId } = useParams();
@@ -11,13 +13,14 @@ const CategoryDetailPage = () => {
   const sortKey = (searchParams.get("sort") as "popularity" | "createdAt" | "rating") ?? "popularity";
   const query = searchParams.get("q") ?? "";
 
+  const { tools: availableTools, loading } = useSiteData();
   const category = useMemo(() => (categoryId ? getCategoryById(categoryId) : undefined), [categoryId]);
-  const tools = useMemo(() => {
+  const categoryTools = useMemo(() => {
     if (!categoryId) {
       return [];
     }
-    return filterTools({ categoryId, query }, sortKey);
-  }, [categoryId, sortKey, query]);
+    return filterTools(availableTools, { categoryId, query }, sortKey);
+  }, [categoryId, sortKey, query, availableTools]);
 
   if (!category) {
     return (
@@ -36,9 +39,11 @@ const CategoryDetailPage = () => {
         <h1 className="text-2xl font-semibold">{category.name}</h1>
         <p className="text-slate-400">{category.description}</p>
         <div className="grid gap-4 md:grid-cols-2">
-          {tools.map((tool) => (
-            <ToolCard key={tool.id} tool={tool} searchTerm={query} />
-          ))}
+          {loading
+            ? Array.from({ length: 2 }).map((_, index) => <ToolCardSkeleton key={`category-${index}`} />)
+            : categoryTools.map((tool) => (
+                <ToolCard key={tool.id} tool={tool} searchTerm={query} />
+              ))}
         </div>
       </section>
     </>

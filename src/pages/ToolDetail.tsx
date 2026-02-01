@@ -5,11 +5,13 @@ import { getToolById, getRelatedTools } from "@/services/toolService";
 import { formatDate } from "@/utils/date";
 import ToolCard from "@/components/ToolCard";
 import { useAppState } from "@/app/AppStateContext";
+import { useSiteData } from "@/app/SiteDataContext";
 
 const ToolDetailPage = () => {
   const { toolId } = useParams();
-  const tool = useMemo(() => (toolId ? getToolById(toolId) : undefined), [toolId]);
-  const related = useMemo(() => (tool ? getRelatedTools(tool) : []), [tool]);
+  const { tools, loading } = useSiteData();
+  const tool = useMemo(() => (toolId ? getToolById(tools, toolId) : undefined), [toolId, tools]);
+  const related = useMemo(() => (tool ? getRelatedTools(tools, tool) : []), [tool, tools]);
   const { recordVisit, favorites, toggleFavorite } = useAppState();
 
   useEffect(() => {
@@ -17,6 +19,14 @@ const ToolDetailPage = () => {
       recordVisit(tool.id);
     }
   }, [tool, recordVisit]);
+
+  if (loading && !tool) {
+    return (
+      <div className="rounded-2xl border border-slate-800/40 bg-slate-900/40 p-6">
+        <p className="text-sm text-slate-400">Loading tool details...</p>
+      </div>
+    );
+  }
 
   if (!tool) {
     return (

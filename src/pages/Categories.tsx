@@ -1,10 +1,12 @@
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { extractTags, filterTools, getTools } from "@/services/toolService";
+import { extractTags, filterTools } from "@/services/toolService";
 import Filters from "@/components/Filters";
 import ToolCard from "@/components/ToolCard";
+import { ToolCardSkeleton } from "@/components/Skeletons";
 import Pagination from "@/components/Pagination";
+import { useSiteData } from "@/app/SiteDataContext";
 
 const PAGE_SIZE = 12;
 
@@ -26,11 +28,13 @@ const CategoriesPage = () => {
   const openSourceParam = searchParams.get("openSource");
   const cnAvailableParam = searchParams.get("cnAvailable");
 
-  const tagPool = useMemo(() => extractTags(getTools()), []);
+  const { tools, loading } = useSiteData();
+  const tagPool = useMemo(() => extractTags(tools), [tools]);
 
   const filteredTools = useMemo(
     () =>
       filterTools(
+        tools,
         {
           query,
           tags: tagParams,
@@ -40,7 +44,15 @@ const CategoriesPage = () => {
         },
         sortKey,
       ),
-    [query, tagParams.join(","), pricingParams.join(","), openSourceParam, cnAvailableParam, sortKey],
+    [
+      tools,
+      query,
+      tagParams.join(","),
+      pricingParams.join(","),
+      openSourceParam,
+      cnAvailableParam,
+      sortKey,
+    ],
   );
 
   const totalPages = Math.max(1, Math.ceil(filteredTools.length / PAGE_SIZE));
@@ -106,9 +118,13 @@ const CategoriesPage = () => {
           }}
         />
         <div className="grid gap-4 md:grid-cols-2">
-          {slice.map((tool) => (
-            <ToolCard key={tool.id} tool={tool} searchTerm={query} />
-          ))}
+          {loading
+            ? Array.from({ length: PAGE_SIZE }).map((_, index) => (
+                <ToolCardSkeleton key={`skeleton-${index}`} />
+              ))
+            : slice.map((tool) => (
+                <ToolCard key={tool.id} tool={tool} searchTerm={query} />
+              ))}
         </div>
         <Pagination
           currentPage={currentPage}
