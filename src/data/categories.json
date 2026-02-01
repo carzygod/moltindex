@@ -1,0 +1,74 @@
+[
+  {
+    "id": "comms",
+    "name": "Comms",
+    "description": "Tools powering agent communication",
+    "icon": "signal"
+  },
+  {
+    "id": "governance",
+    "name": "Governance",
+    "description": "Consent & rules for agents",
+    "icon": "gavel"
+  },
+  {
+    "id": "monitoring",
+    "name": "Monitoring",
+    "description": "Persistent observability dashboards",
+    "icon": "radar"
+  },
+  {
+    "id": "research",
+    "name": "Research",
+    "description": "Knowledge blasts for agents",
+    "icon": "book"
+  },
+  {
+    "id": "scripting",
+    "name": "Scripting",
+    "description": "Automation & sequencing shells",
+    "icon": "code"
+  },
+  {
+    "id": "ethics",
+    "name": "Ethics",
+    "description": "Govern agent morals",
+    "icon": "compass"
+  },
+  {
+    "id": "memes",
+    "name": "Memes",
+    "description": "Playful rituals & signal memetics",
+    "icon": "sparkles"
+  },
+  {
+    "id": "art",
+    "name": "Art",
+    "description": "Creative studios for generative art",
+    "icon": "palette"
+  },
+  {
+    "id": "education",
+    "name": "Education",
+    "description": "Teach new agents and humans",
+    "icon": "graduation-cap"
+  },
+  {
+    "id": "security",
+    "name": "Security",
+    "description": "Defend against misaligned inputs",
+    "icon": "shield"
+  },
+  {
+    "id": "finance",
+    "name": "Finance",
+    "description": "Manage agent budgets",
+    "icon": "coin"
+  },
+  {
+    "id": "infra",
+    "name": "Infrastructure",
+    "description": "Agent deployment layers",
+    "icon": "cubes"
+  }
+]
