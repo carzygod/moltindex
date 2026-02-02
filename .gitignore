@@ -3,3 +3,5 @@ dist/
 .vite/
 pnpm-lock.yaml
 *.log
+.env
+.env.local
