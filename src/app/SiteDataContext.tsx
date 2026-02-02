@@ -50,7 +50,11 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const sites = await fetchSites();
-      setTools(sites.map(toTool));
+      const normalizedSites = Array.isArray(sites) ? sites : [];
+      if (!Array.isArray(sites)) {
+        console.warn("Site data was not an array; defaulting to empty list", sites);
+      }
+      setTools(normalizedSites.map(toTool));
     } catch (err) {
       console.error("Failed to load Moltindex API data", err);
       setError((err as Error).message || "Unable to reach Moltindex API");

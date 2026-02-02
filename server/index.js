@@ -14,7 +14,7 @@ const app = express();
 const PORT = Number(process.env.PORT) || 4000;
 const MONGODB_URI = process.env.MONGODB_URI ?? "mongodb://localhost:27017/moltindex";
 
-app.use(cors({ origin: process.env.CORS_ORIGIN?.split(",") ?? true }));
+app.use(cors());
 app.use(morgan("tiny"));
 app.use(express.json());
 

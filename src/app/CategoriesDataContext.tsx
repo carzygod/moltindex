@@ -21,7 +21,12 @@ export const CategoriesDataProvider = ({ children }: { children: ReactNode }) =>
     setError(null);
     try {
       const data = await fetchCategories();
-      setCategories(data);
+      if (!Array.isArray(data)) {
+        console.warn("Category data is not an array; defaulting to empty list", data);
+        setCategories([]);
+      } else {
+        setCategories(data);
+      }
     } catch (err) {
       setError((err as Error).message || "Unable to fetch categories");
     } finally {
