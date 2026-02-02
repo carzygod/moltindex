@@ -1,4 +1,4 @@
-import { Category, NewsItem, Pricing } from "@/types/models";
+import { Category, NewsItem } from "@/types/models";
 
 const baseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000").replace(/\/+$/, "");
 
@@ -37,21 +37,6 @@ export interface ApiSitePayload {
   createdAt?: string;
   updatedAt?: string;
   coverImage?: string;
-}
-
-export interface SubmitSitePayload {
-  name: string;
-  url: string;
-  description: string;
-  tags: string[];
-  categories?: string[];
-  pricing?: Pricing;
-  openSource?: boolean;
-  cnAvailable?: boolean;
-}
-
-export interface VotePayload {
-  rating: 1 | 2 | 3 | 4 | 5;
 }
 
 export interface SiteStatus {
@@ -96,21 +81,5 @@ export const fetchNews = async (params?: NewsQuery, signal?: AbortSignal): Promi
         .join("&")}`
     : "";
   const response = await apiFetch(`/api/news${queryString}`, { signal });
-  return parseResponse(response);
-};
-
-export const submitSite = async (payload: SubmitSitePayload) => {
-  const response = await apiFetch("/api/sites", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-  return parseResponse(response);
-};
-
-export const voteOnSite = async (id: string, payload: VotePayload) => {
-  const response = await apiFetch(`/api/sites/${id}/vote`, {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
   return parseResponse(response);
 };
