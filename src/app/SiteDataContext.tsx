@@ -1,6 +1,5 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from "react";
 import { fetchSites, ApiSitePayload } from "@/services/api";
-import { getTools } from "@/services/toolService";
 import { Tool, Pricing } from "@/types/models";
 
 interface SiteDataValue {
@@ -42,7 +41,7 @@ const toTool = (site: ApiSitePayload): Tool => ({
 });
 
 export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
-  const [tools, setTools] = useState<Tool[]>(getTools());
+  const [tools, setTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,7 +54,7 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
     } catch (err) {
       console.error("Failed to load Moltindex API data", err);
       setError((err as Error).message || "Unable to reach Moltindex API");
-      setTools(getTools());
+      setTools([]);
     } finally {
       setLoading(false);
     }

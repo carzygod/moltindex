@@ -1,10 +1,7 @@
-import toolsData from "@/data/tools.json";
 import categoriesData from "@/data/categories.json";
 import { Tool, Category, Pricing } from "@/types/models";
 import { sortToolsBy } from "@/utils/sort";
 import { searchTools } from "@/utils/search";
-
-export const getTools = (): Tool[] => toolsData;
 
 export const getCategories = (): Category[] => categoriesData;
 
