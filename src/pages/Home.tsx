@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import { getCategories } from "@/services/toolService";
 import ToolCard from "@/components/ToolCard";
 import CategoryCard from "@/components/CategoryCard";
 import { ToolCardSkeleton } from "@/components/Skeletons";
 import { useAppState } from "@/app/AppStateContext";
 import { useSiteData } from "@/app/SiteDataContext";
+import { useCategoriesData } from "@/app/CategoriesDataContext";
 import { Star } from "lucide-react";
 
 const actionCards = [
@@ -26,9 +26,9 @@ const actionCards = [
 ];
 
 const HomePage = () => {
-  const categories = useMemo(() => getCategories(), []);
-  const { recentlyViewed } = useAppState();
   const { tools, loading, error } = useSiteData();
+  const { categories, loading: categoriesLoading, error: categoriesError } = useCategoriesData();
+  const { recentlyViewed } = useAppState();
 
   const hotTools = useMemo(
     () => [...tools].sort((a, b) => b.popularity - a.popularity).slice(0, 6),
@@ -38,7 +38,6 @@ const HomePage = () => {
     () => [...tools].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).slice(0, 8),
     [tools],
   );
-
   const lastVisitedTools = useMemo(
     () =>
       recentlyViewed
@@ -88,9 +87,13 @@ const HomePage = () => {
         </div>
       </section>
 
-      {error && (
-        <div className="rounded-2xl border border-rose-500/40 bg-rose-500/10 p-4 text-sm text-rose-100">
-          Unable to reach the Moltindex API: {error}
+      {(loading || error) && (
+        <div className="space-y-3 rounded-2xl border border-white/5 bg-[#020617]/70 p-4 text-sm text-slate-300">
+          {error ? (
+            <p className="text-rose-200">Unable to reach the Moltindex API: {error}</p>
+          ) : (
+            <p>Loading agent directory…</p>
+          )}
         </div>
       )}
 
@@ -102,16 +105,10 @@ const HomePage = () => {
         <div className="grid gap-4 md:grid-cols-3">
           {loading
             ? [1, 2, 3].map((id) => (
-                <div
-                  key={id}
-                  className="h-32 rounded-2xl border border-slate-800/80 bg-slate-900/60 animate-pulse"
-                />
+                <div key={id} className="h-32 rounded-2xl border border-slate-800/80 bg-slate-900/60 animate-pulse" />
               ))
             : hotTools.map((tool) => (
-                <article
-                  key={tool.id}
-                  className="rounded-2xl border border-white/10 bg-[#020617]/70 p-4"
-                >
+                <article key={tool.id} className="rounded-2xl border border-white/10 bg-[#020617]/70 p-4">
                   <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500">{tool.pricing}</p>
                   <h3 className="mt-2 text-lg font-semibold text-white">{tool.name}</h3>
                   <p className="text-sm text-slate-400">{tool.tagline}</p>
@@ -141,14 +138,24 @@ const HomePage = () => {
 
       <section className="space-y-4">
         <h2 className="text-xs uppercase tracking-[0.4em] text-slate-500">Categories</h2>
+        {categoriesError && (
+          <p className="text-sm text-slate-400">Unable to load categories: {categoriesError}</p>
+        )}
         <div className="grid gap-4 md:grid-cols-3">
-          {categories.map((category) => (
-            <CategoryCard
-              key={category.id}
-              category={category}
-              toolCount={tools.filter((tool) => tool.categories.includes(category.id)).length}
-            />
-          ))}
+          {categoriesLoading
+            ? Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={`cat-skel-${index}`}
+                  className="h-40 rounded-2xl border border-slate-800/80 bg-slate-900/50 animate-pulse"
+                />
+              ))
+            : categories.map((category) => (
+                <CategoryCard
+                  key={category.id}
+                  category={category}
+                  toolCount={tools.filter((tool) => tool.categories.includes(category.id)).length}
+                />
+              ))}
         </div>
       </section>
 

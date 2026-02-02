@@ -1,12 +1,6 @@
-import categoriesData from "@/data/categories.json";
-import { Tool, Category, Pricing } from "@/types/models";
+import { Tool, Pricing } from "@/types/models";
 import { sortToolsBy } from "@/utils/sort";
 import { searchTools } from "@/utils/search";
-
-export const getCategories = (): Category[] => categoriesData;
-
-export const getCategoryById = (id: string): Category | undefined =>
-  categoriesData.find((category) => category.id === id);
 
 export type ToolFilterOptions = {
   query?: string;

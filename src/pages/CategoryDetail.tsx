@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { filterTools, getCategoryById } from "@/services/toolService";
+import { filterTools } from "@/services/toolService";
 import ToolCard from "@/components/ToolCard";
 import { ToolCardSkeleton } from "@/components/Skeletons";
+import { useCategoriesData } from "@/app/CategoriesDataContext";
 import { useSiteData } from "@/app/SiteDataContext";
 
 const CategoryDetailPage = () => {
@@ -14,13 +15,27 @@ const CategoryDetailPage = () => {
   const query = searchParams.get("q") ?? "";
 
   const { tools: availableTools, loading } = useSiteData();
-  const category = useMemo(() => (categoryId ? getCategoryById(categoryId) : undefined), [categoryId]);
+  const { categories, loading: categoriesLoading } = useCategoriesData();
+
+  const category = useMemo(
+    () => (categoryId ? categories.find((entry) => entry.id === categoryId) : undefined),
+    [categoryId, categories],
+  );
+
   const categoryTools = useMemo(() => {
     if (!categoryId) {
       return [];
     }
     return filterTools(availableTools, { categoryId, query }, sortKey);
   }, [categoryId, sortKey, query, availableTools]);
+
+  if (categoriesLoading) {
+    return (
+      <div className="rounded-2xl border border-slate-800/40 bg-slate-900/40 p-6">
+        <p className="text-sm text-slate-400">Loading category…</p>
+      </div>
+    );
+  }
 
   if (!category) {
     return (
@@ -33,7 +48,7 @@ const CategoryDetailPage = () => {
   return (
     <>
       <Helmet>
-        <title>{category.name} · Moltindex</title>
+        <title>{category.name} 路 Moltindex</title>
       </Helmet>
       <section className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
         <h1 className="text-2xl font-semibold">{category.name}</h1>
@@ -41,9 +56,7 @@ const CategoryDetailPage = () => {
         <div className="grid gap-4 md:grid-cols-2">
           {loading
             ? Array.from({ length: 2 }).map((_, index) => <ToolCardSkeleton key={`category-${index}`} />)
-            : categoryTools.map((tool) => (
-                <ToolCard key={tool.id} tool={tool} searchTerm={query} />
-              ))}
+            : categoryTools.map((tool) => <ToolCard key={tool.id} tool={tool} searchTerm={query} />)}
         </div>
       </section>
     </>

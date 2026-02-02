@@ -4,6 +4,7 @@ import { AppRoutes } from "./router";
 import Layout from "./Layout";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { SiteDataProvider } from "./SiteDataContext";
+import { CategoriesDataProvider } from "./CategoriesDataContext";
 
 const applyTheme = (mode: string) => {
   const root = document.documentElement;
@@ -25,9 +26,11 @@ const App = () => {
   return (
     <AppStateProvider>
       <SiteDataProvider>
-        <Layout>
-          <AppRoutes />
-        </Layout>
+        <CategoriesDataProvider>
+          <Layout>
+            <AppRoutes />
+          </Layout>
+        </CategoriesDataProvider>
       </SiteDataProvider>
     </AppStateProvider>
   );

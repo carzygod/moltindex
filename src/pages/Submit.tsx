@@ -1,13 +1,13 @@
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { getCategories } from "@/services/toolService";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { submitSite, SubmitSitePayload } from "@/services/api";
 import { useSiteData } from "@/app/SiteDataContext";
 import { Pricing } from "@/types/models";
+import { useCategoriesData } from "@/app/CategoriesDataContext";
 
 const SubmitPage = () => {
-  const categories = useMemo(() => getCategories(), []);
+  const { categories, loading: categoriesLoading } = useCategoriesData();
   const [formState, setFormState] = useState({
     name: "",
     url: "",
@@ -23,6 +23,12 @@ const SubmitPage = () => {
   >("pendingSubmissions", []);
   const [status, setStatus] = useState<string>("");
   const { refresh } = useSiteData();
+
+  useEffect(() => {
+    if (!formState.category && categories.length > 0) {
+      setFormState((prev) => ({ ...prev, category: categories[0].id }));
+    }
+  }, [categories, formState.category]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

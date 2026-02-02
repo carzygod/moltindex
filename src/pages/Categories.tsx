@@ -7,6 +7,7 @@ import ToolCard from "@/components/ToolCard";
 import { ToolCardSkeleton } from "@/components/Skeletons";
 import Pagination from "@/components/Pagination";
 import { useSiteData } from "@/app/SiteDataContext";
+import { useCategoriesData } from "@/app/CategoriesDataContext";
 
 const PAGE_SIZE = 12;
 
@@ -30,6 +31,7 @@ const CategoriesPage = () => {
 
   const { tools, loading } = useSiteData();
   const tagPool = useMemo(() => extractTags(tools), [tools]);
+  const { categories, loading: categoriesLoading, error: categoriesError } = useCategoriesData();
 
   const filteredTools = useMemo(
     () =>
@@ -89,6 +91,12 @@ const CategoriesPage = () => {
             <span>Sort</span>
           </div>
         </div>
+        {categoriesLoading ? (
+          <p className="text-sm text-slate-400">Loading categories…</p>
+        ) : (
+          <p className="text-sm text-slate-400">{categories.length} categories available</p>
+        )}
+        {categoriesError && <p className="text-sm text-rose-300">Failed to load categories: {categoriesError}</p>}
         <Filters
           tags={tagPool}
           selectedTags={tagParams}

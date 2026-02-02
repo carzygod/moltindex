@@ -1,4 +1,4 @@
-import { Pricing } from "@/types/models";
+import { Category, NewsItem, Pricing } from "@/types/models";
 
 const baseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000").replace(/\/+$/, "");
 
@@ -75,6 +75,27 @@ export const fetchStatus = async (): Promise<SiteStatus> => {
 
 export const fetchSites = async (): Promise<ApiSitePayload[]> => {
   const response = await apiFetch("/api/sites");
+  return parseResponse(response);
+};
+
+export const fetchCategories = async (): Promise<Category[]> => {
+  const response = await apiFetch("/api/categories");
+  return parseResponse(response);
+};
+
+export interface NewsQuery {
+  q?: string;
+  source?: string;
+}
+
+export const fetchNews = async (params?: NewsQuery, signal?: AbortSignal): Promise<NewsItem[]> => {
+  const queryString = params
+    ? `?${Object.entries(params)
+        .filter(([, value]) => Boolean(value))
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`)
+        .join("&")}`
+    : "";
+  const response = await apiFetch(`/api/news${queryString}`, { signal });
   return parseResponse(response);
 };
 

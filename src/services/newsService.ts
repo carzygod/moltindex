@@ -1,7 +1,4 @@
-import newsData from "@/data/news.json";
 import { NewsItem } from "@/types/models";
-
-export const getNews = (): NewsItem[] => newsData;
 
 export const groupByDate = (items: NewsItem[]) => {
   const groups: Record<string, NewsItem[]> = {};
