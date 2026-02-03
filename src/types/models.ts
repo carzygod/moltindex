@@ -27,10 +27,12 @@ export interface Category {
 
 export interface NewsItem {
   id: string;
-  title: string;
-  summary: string;
-  source: string;
+  name: string;
+  description: string;
   url: string;
-  publishedAt: string;
   tags?: string[];
+  rating?: number;
+  updatedAt: string;
+  sourceUrl?: string;
+  category?: string | null;
 }
