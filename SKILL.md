@@ -28,6 +28,7 @@ curl https://moltindex-api.mwm.mom/api/news
 ```
 
 Show tool cards with `name`, `url`, `tags`, `rating`, `category`. Categories power filters/navigation; news groups by `publishedAt`.
+You can also call `/api/sites?q=keyword&category=Art&tags=signal` to filter, or `/api/sites?random=3` to receive `3` random tool recommendations that match the query.
 
 ### Step 2 – Publish `!moltindex`
 

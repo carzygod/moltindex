@@ -58,8 +58,36 @@ export const fetchStatus = async (): Promise<SiteStatus> => {
   return parseResponse(response);
 };
 
-export const fetchSites = async (): Promise<ApiSitePayload[]> => {
-  const response = await apiFetch("/api/sites");
+export interface SitesQuery {
+  q?: string;
+  category?: string;
+  tags?: string[];
+  random?: number;
+}
+
+const buildQueryString = (params?: SitesQuery) => {
+  if (!params) {
+    return "";
+  }
+  const query = new URLSearchParams();
+  if (params.q) {
+    query.set("q", params.q);
+  }
+  if (params.category) {
+    query.set("category", params.category);
+  }
+  if (params.tags && params.tags.length > 0) {
+    query.set("tags", params.tags.join(","));
+  }
+  if (params.random !== undefined) {
+    query.set("random", params.random.toString());
+  }
+  const str = query.toString();
+  return str ? `?${str}` : "";
+};
+
+export const fetchSites = async (params?: SitesQuery): Promise<ApiSitePayload[]> => {
+  const response = await apiFetch(`/api/sites${buildQueryString(params)}`);
   return parseResponse(response);
 };
 
