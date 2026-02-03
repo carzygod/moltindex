@@ -28,7 +28,7 @@ const transformSite = (site) => ({
   coverImage: site.coverImage,
 });
 
-const buildFilter = (q?: string, category?: string, tags?: string[]) => {
+const buildFilter = (q, category, tags) => {
   const filter: Record<string, unknown> = {};
   if (category) {
     filter.categories = category;
