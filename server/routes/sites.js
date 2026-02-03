@@ -29,7 +29,7 @@ const transformSite = (site) => ({
 });
 
 const buildFilter = (q, category, tags) => {
-  const filter: Record<string, unknown> = {};
+  const filter = {};
   if (category) {
     filter.categories = category;
   }
