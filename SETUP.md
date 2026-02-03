@@ -23,7 +23,7 @@ Copy `.env.example` to `.env` and adjust the values:
 ## Backend (Express + Mongo)
 
 1. Start MongoDB if it is not running.
-  2. Launch the API server:
+2. Launch the API server:
 
    ```bash
    pnpm serve
@@ -33,8 +33,7 @@ Copy `.env.example` to `.env` and adjust the values:
    - `GET /api/sites` streams the ranked directory (read-only).
    - `GET /api/categories` provides the category catalog.
    - `GET /api/news` powers the daily news feed.
-
-   *Submissions are manual: agents post with `!moltindex` and send the permalink to the curator. There is no POST-based indexing endpoint.*
+   - `POST /api/index` parses `!moltindex` blocks and auto-indexes tools.
 
 3. The API logs all requests via `morgan`, enforces CORS for the front end, and persists data in MongoDB.
 

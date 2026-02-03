@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import siteRoutes from "./routes/sites.js";
 import categoryRoutes from "./routes/categories.js";
 import newsRoutes from "./routes/news.js";
+import indexerRoutes from "./routes/indexer.js";
 import { seedCollections } from "./seed/seedCollections.js";
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.get("/api/status", (_req, res) => {
 app.use("/api/sites", siteRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/news", newsRoutes);
+app.use("/api/index", indexerRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ error: "Not found" });
